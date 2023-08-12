@@ -7,6 +7,8 @@ builder.Services.AddTransient<IVaccinationService, VaccinationService>();
 builder.Services.AddTransient<IVaccinationRegistrationRepository, VaccinationRegistrationRepository>();
 builder.Services.AddTransient<IVaccinTypeRepository, VaccinTypeRepository>();
 builder.Services.AddTransient<IVaccinationLocationRepository, VaccinationLocationRepository>();
+//automapper
+builder.Services.AddAutoMapper(typeof(Program));
 //app
 var app = builder.Build();
 
@@ -24,17 +26,27 @@ app.MapGet("/types", (IVaccinationService vaccinationService) =>
 });
 
 //retrieve all registrations (/registrations)
-app.MapGet("/registrations", (IVaccinationService vaccinationService) =>
-{
-    return Results.Ok(vaccinationService.GetRegistrations());
-});
+// app.MapGet("/registrations", (IVaccinationService vaccinationService) =>
+// {
+//     return Results.Ok(vaccinationService.GetRegistrations());
+// });
 
+//autmapper
+app.MapGet("/registrations", (IMapper mapper, IVaccinationService vaccinationService) =>
+{
+    var mapped = mapper.Map<List<VaccinRegistrationDTO>>(vaccinationService.GetRegistrations(), opts =>
+    {
+        opts.Items["locations"] = vaccinationService.GetLocations();
+        opts.Items["vaccins"] = vaccinationService.GetVaccins();
+    });
+    return Results.Ok(mapped);
+});
 //add a new registration (/registration
 //zonder validator
-// app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
-// {
-//     return Results.Ok(vaccinationService.AddRegistration(registration));
-// });
+app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
+{
+    return Results.Ok(vaccinationService.AddRegistration(registration));
+});
 //met validator
 app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
 {
@@ -49,6 +61,7 @@ app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinReg
         return Results.BadRequest(result.Errors);
     }
 });
+
 
 
 app.Run("http://localhost:5000");
