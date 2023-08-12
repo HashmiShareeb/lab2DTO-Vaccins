@@ -2,7 +2,7 @@ using System;
 
 namespace lab2DTO.DTO.Profiles;
 //Automapper is based on the concept of a Profile. This profile will determine which objects Automapper should map. 
-public class DTOProfile : Profile
+public class DTOProfile : Profile //Profile is een class van automapper
 {
     public DTOProfile()
     {

@@ -41,26 +41,34 @@ app.MapGet("/registrations", (IMapper mapper, IVaccinationService vaccinationSer
     });
     return Results.Ok(mapped);
 });
+
+//post with automapper
+app.MapPost("/registrations", (IMapper mapper, IVaccinationService vaccinationService, VaccinRegistrationDTO registration) =>
+{
+    var mapped = mapper.Map<VaccinRegistration>(registration);
+    return Results.Ok(vaccinationService.AddRegistration(mapped));
+});
+
 //add a new registration (/registration
 //zonder validator
-app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
-{
-    return Results.Ok(vaccinationService.AddRegistration(registration));
-});
-//met validator
-app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
-{
-    var validator = new VaccinValidator();
-    var result = validator.Validate(registration);
-    if (result.IsValid)
-    {
-        return Results.Ok(vaccinationService.AddRegistration(registration));
-    }
-    else
-    {
-        return Results.BadRequest(result.Errors);
-    }
-});
+// app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
+// {
+//     return Results.Ok(vaccinationService.AddRegistration(registration));
+// });
+// //met validator
+// app.MapPost("/registrations", (IVaccinationService vaccinationService, VaccinRegistration registration) =>
+// {
+//     var validator = new VaccinValidator();
+//     var result = validator.Validate(registration);
+//     if (result.IsValid)
+//     {
+//         return Results.Ok(vaccinationService.AddRegistration(registration));
+//     }
+//     else
+//     {
+//         return Results.BadRequest(result.Errors);
+//     }
+// });
 
 
 
