@@ -1,0 +1,18 @@
+GET http://localhost:5000/locations HTTP/1.1
+###
+GET http://localhost:5000/types HTTP/1.1
+###
+GET http://localhost:5000/registrations HTTP/1.1
+###
+POST http://localhost:5000/registrations HTTP/1.1
+Content-Type: application/json
+
+{
+    "name" : "Trump",
+    "firstName" : "Donald",
+    "email" : "donald@maga.eu",
+    "yearOfBirth" : 1952,
+    "vaccinationDate": "1/1/2022",
+    "vaccinTypeId" : "4e2a72fb-f4fa-416f-87cd-ea338b518519"
+}
+###
